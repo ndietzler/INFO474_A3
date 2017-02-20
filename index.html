@@ -240,74 +240,13 @@ function brush() {
   var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }), //array of dimension names
       extents = actives.map(function(p) { return y[p].brush.extent(); }); //array of ranges of accepted values
 
-  var highlightedData0 = [];
-  var highlightedData1 = [];
-  var highlightedData2 = [];
-  var highlightedData3 = [];
-  var highlightedData4 = [];
-  var highlightedData = [];
-  //var tempArr = [];
-  //var finalArr = [];
-
-  /*
-  if (foreground.style("display") !== null && foreground.style("display") !== "none") {
-      console.log("hi");
-      var highlightedData = d3.selectAll("g .foreground path").style("display");
-      console.log(highlightedData);
-  }*/
+  var highlightedData = [[], [], [], [], []];
   
   foreground.style("display", function(d) {
     return actives.every(function(p, i) {
-      /*
       if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
-          if (i === 0) {
-              highlightedData.push(d);
-          } else {
-              for (var j = 0; j < highlightedData.length; j++) {
-                  if (highlightedData[j] === d) {
-                      tempArr.push(d);
-                      //highlightedData.push(d);
-                      //console.log(d);
-                  }
-              }
-              console.log(tempArr);
-              highlightedData = tempArr;
-              tempArr = [];
-          }
-      }
-      */
-      /*if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
-          if (i === 0) {
-              highlightedData.push(d);
-          } else if (highlightedData.indexOf(d) !== -1) {
-              tempArr.push(d);
-              //highlightedData.push(d);
-          }
-          console.log(tempArr);
-          console.log(highlightedData);
-          finalArr = tempArr;
-          //console.log(finalArr);
-          //highlightedData = [];
-          //finalArr = [];
-      }*/
-      if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
-        if (i === 0) {
-            highlightedData0.push(d);
-        } else if (i === 1) {
-            highlightedData1.push(d);
-        } else if (i === 2) {
-            highlightedData2.push(d);
-        } else if (i === 3) {
-            highlightedData3.push(d);
-        } else if (i === 4) {
-            highlightedData4.push(d);
-        }
-
-        console.log(highlightedData0);
-        console.log(highlightedData1);
-        console.log(highlightedData2);
-        console.log(highlightedData3);
-        console.log(highlightedData4);
+        highlightedData[i].push(d);
+        console.log(highlightedData);
 
       }
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
