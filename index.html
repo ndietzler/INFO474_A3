@@ -35,6 +35,18 @@ svg {
   cursor: move;
 }
 
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis--x path {
+  display: none;
+}
+
 </style>
 
 <body>
@@ -59,6 +71,18 @@ var svg = d3.select("body").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svgBar = d3.select("body").append("svg")
+    .attr("width", 960)
+    .attr("height", 500);
+
+var marginBar = {top: 20, right: 20, bottom: 30, left: 40},
+    widthBar = +svgBar.attr("width") - marginBar.left - marginBar.right,
+    heightBar = +svgBar.attr("height") - marginBar.top - marginBar.bottom;
+
+svgBar.append("g")
+    .attr("transform", "translate(" + marginBar.left + "," + marginBar.top + ")");
+
 
 d3.csv("titanic.csv", function(error, passengers) {
 
