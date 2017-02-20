@@ -66,11 +66,19 @@ var line = d3.svg.line(),
     background,
     foreground;
 
+d3.select("body")
+    .append("h1")
+    .text("Determinants of Surviving the Titanic Shipwreck");
+
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.select("body")
+    .append("h3")
+    .text("Survival Counts of Male and Female Passengers");
 
 var svgBar = d3.select("body").append("svg")
     .attr("width", 960)
@@ -83,6 +91,10 @@ var marginBar = {top: 20, right: 20, bottom: 30, left: 40},
 svgBar.append("g")
     .attr("transform", "translate(" + marginBar.left + "," + marginBar.top + ")");
 
+var xBar = d3.scale.ordinal().rangePoints([0, widthBar], 0.1),
+    //yBar = d3.scale.linear().domain([0, 1000]).range([heightBar, 0]); // range 0 to 1000 for count
+    yBar = d3.scale.linear();
+
 
 d3.csv("titanic.csv", function(error, passengers) {
 
@@ -93,6 +105,17 @@ d3.csv("titanic.csv", function(error, passengers) {
         .range([height, 0]));
 
   }));
+
+  
+  var countFemale = 0;
+  var countMale = 0;
+  var countFemaleSurvived = 0;
+  var countFemaleDead = 0;
+  var countMaleSurvived = 0;
+  var countMaleDead = 0;
+  //d3.keys(passengers[0]).filter(function(d)) {
+
+  //}
 
   // Add grey background lines for context.
   background = svg.append("g")
