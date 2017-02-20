@@ -64,7 +64,8 @@ var x = d3.scale.ordinal().rangePoints([0, width], 1),
 var line = d3.svg.line(),
     axis = d3.svg.axis().orient("left"),
     background,
-    foreground;
+    foreground,
+    highlightedData;
 
 d3.select("body")
     .append("h1")
@@ -106,16 +107,35 @@ d3.csv("titanic.csv", function(error, passengers) {
 
   }));
 
-  
   var countFemale = 0;
   var countMale = 0;
   var countFemaleSurvived = 0;
   var countFemaleDead = 0;
   var countMaleSurvived = 0;
   var countMaleDead = 0;
-  //d3.keys(passengers[0]).filter(function(d)) {
-
-  //}
+  passengers.forEach(function(d) {
+      if (d.sex === "female") {
+          countFemale++;
+          if (d.survived === "0") {
+              countFemaleDead++;
+          } else {
+              countFemaleSurvived++;
+          }
+      } else {
+          countMale++;
+          if (d.survived === "0") {
+              countMaleDead++;
+          } else {
+              countMaleSurvived++;
+          }
+      }
+  });
+  //console.log(countFemale);
+  //console.log(countMale);
+  //console.log(countFemaleSurvived);
+  //console.log(countFemaleDead);
+  //console.log(countMaleSurvived);
+  //console.log(countMaleDead);
 
   // Add grey background lines for context.
   background = svg.append("g")
@@ -138,15 +158,19 @@ d3.csv("titanic.csv", function(error, passengers) {
       .data(dimensions)
     .enter().append("g")
       .attr("class", "dimension")
-      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+      .attr("transform", function(d) { return "translate(" + x(d) + ")"; });
+      /*
       .call(d3.behavior.drag()
-        .origin(function(d) { return {x: x(d)}; })
+        //.origin(function(d) { return {x: x(d)}; })
         .on("dragstart", function(d) {
           dragging[d] = x(d);
+          console.log(x(d));
+          console.log(dragging[d]);
           background.attr("visibility", "hidden");
         })
         .on("drag", function(d) {
           dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+          console.log(dragging[d]);
           foreground.attr("d", path);
           dimensions.sort(function(a, b) { return position(a) - position(b); });
           x.domain(dimensions);
@@ -156,13 +180,15 @@ d3.csv("titanic.csv", function(error, passengers) {
           delete dragging[d];
           transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
           transition(foreground).attr("d", path);
+          console.log("hi");
           background
               .attr("d", path)
             .transition()
               .delay(500)
               .duration(0)
               .attr("visibility", null);
-        }));
+        }));*/
+
 
   // Add an axis and title.
   var axisCount = 0;
@@ -186,6 +212,9 @@ d3.csv("titanic.csv", function(error, passengers) {
       .attr("x", -8)
       .attr("width", 16);
 
+  //var highlightedData
+  //console.log(highlightedData);
+
 });
 
 function position(d) {
@@ -208,13 +237,85 @@ function brushstart() {
 
 // Handles a brush event, toggling the display of foreground lines.
 function brush() {
-  var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
-      extents = actives.map(function(p) { return y[p].brush.extent(); });
+  var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }), //array of dimension names
+      extents = actives.map(function(p) { return y[p].brush.extent(); }); //array of ranges of accepted values
+
+  var highlightedData0 = [];
+  var highlightedData1 = [];
+  var highlightedData2 = [];
+  var highlightedData3 = [];
+  var highlightedData4 = [];
+  var highlightedData = [];
+  //var tempArr = [];
+  //var finalArr = [];
+
+  /*
+  if (foreground.style("display") !== null && foreground.style("display") !== "none") {
+      console.log("hi");
+      var highlightedData = d3.selectAll("g .foreground path").style("display");
+      console.log(highlightedData);
+  }*/
+  
   foreground.style("display", function(d) {
     return actives.every(function(p, i) {
+      /*
+      if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
+          if (i === 0) {
+              highlightedData.push(d);
+          } else {
+              for (var j = 0; j < highlightedData.length; j++) {
+                  if (highlightedData[j] === d) {
+                      tempArr.push(d);
+                      //highlightedData.push(d);
+                      //console.log(d);
+                  }
+              }
+              console.log(tempArr);
+              highlightedData = tempArr;
+              tempArr = [];
+          }
+      }
+      */
+      /*if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
+          if (i === 0) {
+              highlightedData.push(d);
+          } else if (highlightedData.indexOf(d) !== -1) {
+              tempArr.push(d);
+              //highlightedData.push(d);
+          }
+          console.log(tempArr);
+          console.log(highlightedData);
+          finalArr = tempArr;
+          //console.log(finalArr);
+          //highlightedData = [];
+          //finalArr = [];
+      }*/
+      if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
+        if (i === 0) {
+            highlightedData0.push(d);
+        } else if (i === 1) {
+            highlightedData1.push(d);
+        } else if (i === 2) {
+            highlightedData2.push(d);
+        } else if (i === 3) {
+            highlightedData3.push(d);
+        } else if (i === 4) {
+            highlightedData4.push(d);
+        }
+
+        console.log(highlightedData0);
+        console.log(highlightedData1);
+        console.log(highlightedData2);
+        console.log(highlightedData3);
+        console.log(highlightedData4);
+
+      }
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
     }) ? null : "none";
+
+
   });
+
 }
 
 </script>
