@@ -40,7 +40,7 @@ svg {
 }
 
 .bar:hover {
-  fill: brown;
+  /*fill: brown;*/
 }
 
 .axis--x path {
@@ -70,6 +70,9 @@ var line = d3.svg.line(),
 d3.select("body")
     .append("h1")
     .text("Determinants of Surviving the Titanic Shipwreck");
+
+
+d3.select("body").append("p").text("Brush the axes of the parallel coordinates plot to see the correlation between certain demographics and surviving the Titanic shipwreck.");
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -184,6 +187,14 @@ d3.csv("titanic.csv", function(error, passengers) {
           var x = (yBar.range())[0];
           console.log(x - yBar(d[1]));
           return x - yBar(d[1]); })
+      .style("fill", function(d) {
+          console.log("outside");
+          console.log(d[2]);
+          if (d[2] === "perished") {
+              console.log("hi");
+              return "#C0625E";
+          }
+      });
 
 
   // Add grey background lines for context.
