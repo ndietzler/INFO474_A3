@@ -174,24 +174,47 @@ d3.csv("titanic.csv", function(error, passengers) {
       .attr("text-anchor", "end")
       .text("Count");
 
-  console.log(dataset);
+  var greaterFemale = 0;
+  var greaterMale = 0;
+
+  dataset.forEach(function(d) {
+      if (d[0] === "female") {
+          if (d[1] > greaterFemale) {
+              greaterFemale = d[1];
+          }
+      } else {
+          if (d[1] > greaterMale) {
+              greaterMale = d[1];
+          }
+      }
+  })
 
   svgBar.selectAll(".bar")
     .data(dataset)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { if (d[0] === "male") {return marginBar.left + widthBar / 2} else if (d[0] === "female") {return marginBar.left}})
-      .attr("y", function(d) { return yBar(d[1])})
+      .attr("x", function(d) { if (d[0] === "female") {return marginBar.left + widthBar / 2} else if (d[0] === "male") {return marginBar.left}})
+      .attr("y", function(d) {
+          if (d[0] === "female") {
+              if (d[1] === greaterFemale) {
+                  return yBar(d[1]);
+              } else {
+                  return yBar(d[1] + greaterFemale);
+              }
+          } else {
+              if (d[1] === greaterMale) {
+                  return yBar(d[1]);
+              } else {
+                  return yBar(d[1] + greaterMale);
+              }
+          }
+        })
       .attr("width", xBar.rangeBand())
       .attr("height", function(d) { 
           var x = (yBar.range())[0];
-          console.log(x - yBar(d[1]));
           return x - yBar(d[1]); })
       .style("fill", function(d) {
-          console.log("outside");
-          console.log(d[2]);
           if (d[2] === "perished") {
-              console.log("hi");
               return "#C0625E";
           }
       });
