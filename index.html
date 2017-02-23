@@ -111,7 +111,6 @@ d3.csv("titanic.csv", function(error, passengers) {
   }));
 
 
-
   var state = ["survived", "dead"];
 
   var countFemale = 0;
@@ -138,7 +137,8 @@ d3.csv("titanic.csv", function(error, passengers) {
       }
   });
 
-  var dataset = [["female", countFemaleSurvived], ["female", countFemaleDead], ["male", countMaleSurvived], ["male", countMaleDead]];
+  var dataset = [["female", countFemaleSurvived, "survived"], ["female", countFemaleDead, "perished"], ["male", countMaleSurvived, "survived"], ["male", countMaleDead, "perished"]];
+  dataset.sort(function(a, b) {return b[1] - a[1]});
 
   var layers = d3.layout.stack()(state.map(function(c) {
       return dataset.map(function(d) {
@@ -147,10 +147,7 @@ d3.csv("titanic.csv", function(error, passengers) {
   }));
 
   xBar.domain(layers[0].map(function(d) { return d.x; }));
-  console.log(xBar.domain());
-  //yBar.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y; })]);
   yBar.domain([0, d3.max([countFemale, countMale])]);
-  console.log(yBar.domain());
 
 
   svgBar.append("g")
