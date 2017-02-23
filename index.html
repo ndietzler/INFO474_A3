@@ -72,7 +72,7 @@ d3.select("body")
     .text("Determinants of Surviving the Titanic Shipwreck");
 
 
-d3.select("body").append("p").text("Brush the axes of the parallel coordinates plot to see the correlation between certain demographics and surviving the Titanic shipwreck.");
+d3.select("body").append("p").text("Brush over the axes of the parallel coordinates plot to see how different factors affect the survival counts of male and female passengers on the Titanic.");
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -145,7 +145,7 @@ d3.csv("titanic.csv", function(error, passengers) {
   });
 
   var dataset = [["female", countFemaleSurvived, "survived"], ["female", countFemaleDead, "perished"], ["male", countMaleSurvived, "survived"], ["male", countMaleDead, "perished"]];
-  dataset.sort(function(a, b) {return b[1] - a[1]});
+  //dataset.sort(function(a, b) {return b[1] - a[1]});
 
   var layers = d3.layout.stack()(state.map(function(c) {
       return dataset.map(function(d) {
@@ -194,14 +194,11 @@ d3.csv("titanic.csv", function(error, passengers) {
   })
 
 
-
-  
-
   svgBar.selectAll(".bar")
     .data(dataset)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { if (d[0] === "female") {return marginBar.left + widthBar / 2} else if (d[0] === "male") {return marginBar.left}})
+      .attr("x", function(d) { if (d[0] === "male") {return marginBar.left + widthBar / 2} else if (d[0] === "female") {return marginBar.left}})
       .attr("y", function(d) {
           if (d[0] === "female") {
               if (d[1] === greaterFemale) {
@@ -354,6 +351,7 @@ function brush() {
       });
 
       var dataset = [["female", countFemaleSurvived, "survived"], ["female", countFemaleDead, "perished"], ["male", countMaleSurvived, "survived"], ["male", countMaleDead, "perished"]];
+      //dataset.sort(function(a, b) {return b[1] - a[1]});
       
       var state = ["survived", "dead"];
 
@@ -394,6 +392,8 @@ function brush() {
 
       var greaterFemale = 0;
       var greaterMale = 0;
+      var greaterGender = "";
+      var lesserGender = "";
 
       dataset.forEach(function(d) {
           if (d[0] === "female") {
@@ -406,6 +406,14 @@ function brush() {
               }
           }
       })
+
+      if (greaterFemale >= greaterMale) {
+          greaterGender = "female";
+          lesserGender = "male";
+      } else {
+          greaterGender = "male";
+          lesserGender = "female";
+      }
 
 
       d3.selectAll(".bar").data([]).exit().remove();
