@@ -188,10 +188,10 @@ d3.csv("titanic.csv", function(error, passengers) {
       .call(yAxisBar)
     .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", -50)
-      .attr("dy", "0.71em")
+      .attr("dx", "-15em")
+      .attr("dy", "-3.25em")
       .attr("text-anchor", "end")
-      .text("Count");
+      .text("Count of Passengers");
 
   var greaterFemale = 0;
   var greaterMale = 0;
@@ -401,15 +401,13 @@ function brush() {
       svgBar.append("g")
           .attr("class", "axis axis--y")
           .attr("transform", "translate(" + marginBar.left + ",0)")
-          .call(yAxisBar);
-
-          /*
+          .call(yAxisBar)
         .append("text")
           .attr("transform", "rotate(-90)")
-          .attr("y", -50)
-          .attr("dy", "0.71em")
+          .attr("dx", "-15em")
+          .attr("dy", "-3.25em")
           .attr("text-anchor", "end")
-          .text("Count");*/
+          .text("Count of Passengers");
 
       yAxisBar.ticks(Math.min(maxValue, 5)).tickFormat(d3.format("d")).tickSubdivide(0);
 
