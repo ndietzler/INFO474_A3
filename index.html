@@ -175,9 +175,11 @@ d3.csv("titanic.csv", function(error, passengers) {
       .call(xAxisBar)
     .selectAll("text")
       .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", "-.55em")
-      .attr("transform", "rotate(-90)" );
+      //.attr("dx", "-.8em")
+      .attr("dx", "1.55em")
+      //.attr("dy", "-.55em");
+      .attr("dy", ".7em");
+      //.attr("transform", "rotate(-90)" );
 
   svgBar.append("g")
       .attr("class", "axis axis--y")
@@ -386,23 +388,27 @@ function brush() {
       svgBar.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(" + marginBar.left + "," + heightBar + ")")
-          .call(xAxisBar)
+          .call(xAxisBar);
+
+        /*
         .selectAll("text")
           .style("text-anchor", "end")
           .attr("dx", "-.8em")
           .attr("dy", "-.55em")
-          .attr("transform", "rotate(-90)" );
+          .attr("transform", "rotate(-90)" );*/
 
       svgBar.append("g")
           .attr("class", "axis axis--y")
           .attr("transform", "translate(" + marginBar.left + ",0)")
-          .call(yAxisBar)
+          .call(yAxisBar);
+
+          /*
         .append("text")
           .attr("transform", "rotate(-90)")
           .attr("y", -50)
           .attr("dy", "0.71em")
           .attr("text-anchor", "end")
-          .text("Count");
+          .text("Count");*/
 
       yAxisBar.ticks(Math.min(maxValue, 5)).tickFormat(d3.format("d")).tickSubdivide(0);
 
