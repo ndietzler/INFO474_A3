@@ -47,6 +47,11 @@ svg {
   /*display: none;*/
 }
 
+container {
+  float: left;
+  padding-right: 1em;
+}
+
 </style>
 
 <body>
@@ -54,7 +59,8 @@ svg {
 <script>
 
 var margin = {top: 30, right: 10, bottom: 10, left: 10},
-    width = 960 - margin.left - margin.right,
+    //width = 960 - margin.left - margin.right,
+    width = 750 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal().rangePoints([0, width], 1),
@@ -74,11 +80,14 @@ d3.select("body")
 
 d3.select("body").append("p").text("Brush over the axes of the parallel coordinates plot to see how different factors affect the survival counts of male and female passengers on the Titanic.");
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("body").append("container").append("svg") /**/
+//var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+/*d3.select("svg").append("p").text("Brush over the axes of the parallel coordinates plot to see how different factors affect the survival counts of male and female passengers on the Titanic.");*/
 
 d3.select("body")
     .append("h3")
@@ -88,9 +97,11 @@ d3.select("body")
     .append("p")
     .text("Blue indicates the number of passengers that survived while pink indicates the number of passengers that perished.");
 
-var svgBar = d3.select("body").append("svg")
+var svgBar = d3.select("body").append("container").append("svg") /**/
+//var svgBar = d3.select("body").append("svg")
     .attr("width", 275)
-    .attr("height", 500);
+    //.attr("height", 500);
+    .attr("height", 400);
 
 var marginBar = {top: 20, right: 20, bottom: 30, left: 40},
     widthBar = +svgBar.attr("width") - marginBar.left - marginBar.right,
@@ -102,7 +113,9 @@ var xBar = d3.scale.ordinal().rangeBands([0, widthBar], 0.1),
 
 var xAxisBar = d3.svg.axis().scale(xBar).orient("bottom");
 
-var yAxisBar = d3.svg.axis().scale(yBar).orient("left").ticks(10);
+//var yAxisBar = d3.svg.axis().scale(yBar).orient("left").ticks(10);
+var yAxisBar = d3.svg.axis().scale(yBar).orient("left");
+//var yAxisBar = d3.svg.axis().scale(yBar).orient("left").ticks(6).tickFormat(d3.format("d")).tickSubdivide(0);
 
 
 
@@ -116,7 +129,6 @@ d3.csv("titanic.csv", function(error, passengers) {
         .range([height, 0]));
 
   }));
-
 
   var state = ["survived", "dead"];
 
@@ -361,8 +373,10 @@ function brush() {
           });
       }));
 
+      var maxValue = d3.max([countFemale, countMale]);
+
       xBar.domain(layers[0].map(function(d) { return d.x; }));
-      yBar.domain([0, d3.max([countFemale, countMale])]);
+      yBar.domain([0, maxValue]);
 
 
       d3.selectAll(".axis--x").data([]).exit().remove();
@@ -389,6 +403,8 @@ function brush() {
           .attr("dy", "0.71em")
           .attr("text-anchor", "end")
           .text("Count");
+
+      yAxisBar.ticks(Math.min(maxValue, 5)).tickFormat(d3.format("d")).tickSubdivide(0);
 
       var greaterFemale = 0;
       var greaterMale = 0;
