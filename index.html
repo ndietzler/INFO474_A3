@@ -67,8 +67,8 @@ rect {
   stroke-width: 2;
 }
 
-table {
-  font-size: 12px;
+td, th {
+    padding: 10px 4px;
 }
 
 </style>
@@ -351,14 +351,17 @@ d3.csv("titanic.csv", function(error, passengers) {
       .data(passengers)
     .enter().append("path")
       .attr("d", path)
-      .style("stroke", function(d) {console.log(d.survived); if (d.survived === '0') {return '#C0625E'} else { return 'steelblue';}});
+      .style("stroke", function(d) { if (d.survived === '0') {return '#C0625E'} else { return 'steelblue';}});
 
   // Add a group element for each dimension.
   var g = svg.selectAll(".dimension")
       .data(dimensions)
     .enter().append("g")
+      //.style("opacity", 1)
       .attr("class", "dimension")
-      .attr("transform", function(d) { return "translate(" + x(d) + ")"; });
+      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+      .on("mouseover", function(d) {d3.select(this).style("font-size", '14px').style('font-weight', 'bold');})
+      .on("mouseout", function(d) {d3.select(this).style("font-size", '10px').style('font-weight', 'normal');});
 
   // Add an axis and title.
   var axisCount = 0;
