@@ -50,7 +50,15 @@ svg {
 
 container {
   float: left;
-  padding-right: 1em;
+  /*padding-right: 1em;*/
+}
+
+.legend {
+  font-size: 12px;
+}
+
+rect {
+  stroke-width: 2;
 }
 
 </style>
@@ -81,42 +89,35 @@ d3.select("body")
 
 d3.select("body").append("p").text("Brush over the axes of the parallel coordinates plot to see how different factors affect the survival counts of male and female passengers on the Titanic.");
 
-var svg = d3.select("body").append("container").append("svg") /**/
-//var svg = d3.select("body").append("svg")
+var svg = d3.select("body").append("container").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-/*d3.select("svg").append("p").text("Brush over the axes of the parallel coordinates plot to see how different factors affect the survival counts of male and female passengers on the Titanic.");*/
-
 d3.select("body")
     .append("h3")
     .text("Survival Counts of Male and Female Passengers");
 
-d3.select("body")
+/*d3.select("body")
     .append("p")
-    .text("Blue indicates the number of passengers that survived while pink indicates the number of passengers that perished.");
+    .text("Blue indicates the number of passengers that survived while pink indicates the number of passengers that perished.");*/
 
-var svgBar = d3.select("body").append("container").append("svg") /**/
-//var svgBar = d3.select("body").append("svg")
-    .attr("width", 275)
-    //.attr("height", 500);
+var svgBar = d3.select("body").append("container").append("svg")
+    //.attr("width", 275)
+    .attr("width", 350)
     .attr("height", 400);
 
 var marginBar = {top: 20, right: 20, bottom: 30, left: 40},
-    widthBar = +svgBar.attr("width") - marginBar.left - marginBar.right,
+    widthBar = +svgBar.attr("width") - marginBar.left - marginBar.right -75,
     heightBar = +svgBar.attr("height") - marginBar.top - marginBar.bottom;
-
 
 var xBar = d3.scale.ordinal().rangeBands([0, widthBar], 0.1),
     yBar = d3.scale.linear().range([heightBar, 0]);
 
 var xAxisBar = d3.svg.axis().scale(xBar).orient("bottom");
 
-//var yAxisBar = d3.svg.axis().scale(yBar).orient("left").ticks(10);
 var yAxisBar = d3.svg.axis().scale(yBar).orient("left");
-//var yAxisBar = d3.svg.axis().scale(yBar).orient("left").ticks(6).tickFormat(d3.format("d")).tickSubdivide(0);
 
 
 
@@ -168,6 +169,51 @@ d3.csv("titanic.csv", function(error, passengers) {
 
   xBar.domain(layers[0].map(function(d) { return d.x; }));
   yBar.domain([0, d3.max([countFemale, countMale])]);
+
+
+
+
+
+
+
+
+  var legendColors = ["steelblue", "#C0625E"];
+  var legendText = ["survived", "perished"];
+
+
+  var legendRectSize = 18;
+  var legendSpacing = 4;
+
+  var legend = svgBar.selectAll('.legend')
+    .data(legendColors)
+    .enter()
+    .append('g')
+    .attr('class', 'legend')
+    .attr('transform', function(d, i) {
+      //var height = legendRectSize + legendSpacing;
+      var offset =  height * legendColors.length / 2;
+      //var horz = -2 * legendRectSize;
+      //var vert = i * height - offset;
+      var vert = i * 25;
+      var horz = 250;
+      return 'translate(' + horz + ',' + vert + ')';
+    })
+    .append('rect')
+      .attr('width', legendRectSize)
+      .attr('height', legendRectSize)
+      .style('stroke', function(d) { return d; })
+      .style('fill', function(d) { return d; });
+    
+  svgBar.selectAll("g")
+      .data(legendText)
+      //.enter()
+      //.append('g')
+      .append('text')
+      .attr('x', 23)
+      .attr('y', 13)
+        .text(function(d) {return d;});
+
+
 
 
   svgBar.append("g")
@@ -238,6 +284,15 @@ d3.csv("titanic.csv", function(error, passengers) {
               return "#C0625E";
           }
       });
+      /*
+      .on("mouseover", function() { tooltip.style("display", null); })
+      .on("mouseout", function() { tooltip.style("display", "none"); })
+      .on("mousemove", function(d) {
+        var xPosition = d3.mouse(this)[0] - 15;
+        var yPosition = d3.mouse(this)[1] - 25;
+        tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+        tooltip.select("text").text(d.y);
+      });*/
 
 
 
