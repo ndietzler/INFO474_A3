@@ -21,7 +21,7 @@ svg {
 
 .foreground path {
   fill: none;
-  stroke: steelblue;
+  /*stroke: steelblue;*/
 }
 
 .brush .extent {
@@ -65,6 +65,10 @@ container {
 
 rect {
   stroke-width: 2;
+}
+
+table {
+  font-size: 12px;
 }
 
 </style>
@@ -346,7 +350,8 @@ d3.csv("titanic.csv", function(error, passengers) {
     .selectAll("path")
       .data(passengers)
     .enter().append("path")
-      .attr("d", path);
+      .attr("d", path)
+      .style("stroke", function(d) {console.log(d.survived); if (d.survived === '0') {return '#C0625E'} else { return 'steelblue';}});
 
   // Add a group element for each dimension.
   var g = svg.selectAll(".dimension")
