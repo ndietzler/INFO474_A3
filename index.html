@@ -21,7 +21,6 @@ svg {
 
 .foreground path {
   fill: none;
-  /*stroke: steelblue;*/
 }
 
 .brush .extent {
@@ -46,17 +45,8 @@ svg {
   fill: steelblue;
 }
 
-.bar:hover {
-  /*fill: brown;*/
-}
-
-.axis--x path {
-  /*display: none;*/
-}
-
 container {
   float: left;
-  /*padding-right: 1em;*/
 }
 
 .legend {
@@ -78,7 +68,6 @@ td, th {
 <script>
 
 var margin = {top: 30, right: 10, bottom: 10, left: 10},
-    //width = 960 - margin.left - margin.right,
     width = 750 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -109,12 +98,7 @@ d3.select("body")
     .append("h3")
     .text("Survival Counts of Male and Female Passengers");
 
-/*d3.select("body")
-    .append("p")
-    .text("Blue indicates the number of passengers that survived while pink indicates the number of passengers that perished.");*/
-
 var svgBar = d3.select("body").append("container").append("svg")
-    //.attr("width", 275)
     .attr("width", 350)
     .attr("height", 400);
 
@@ -139,7 +123,6 @@ var tabulate = function (data, columns) {
       .data(columns)
       .enter()
     .append('th')
-      //.style("float", "left")
       .text(function (d) { return d })
 
   var rows = tbody.selectAll('tr')
@@ -203,7 +186,6 @@ d3.csv("titanic.csv", function(error, passengers) {
   });
 
   var dataset = [["female", countFemaleSurvived, "survived"], ["female", countFemaleDead, "perished"], ["male", countMaleSurvived, "survived"], ["male", countMaleDead, "perished"]];
-  //dataset.sort(function(a, b) {return b[1] - a[1]});
 
   var layers = d3.layout.stack()(state.map(function(c) {
       return dataset.map(function(d) {
@@ -234,10 +216,7 @@ d3.csv("titanic.csv", function(error, passengers) {
     .append('g')
     .attr('class', 'legend')
     .attr('transform', function(d, i) {
-      //var height = legendRectSize + legendSpacing;
       var offset =  height * legendColors.length / 2;
-      //var horz = -2 * legendRectSize;
-      //var vert = i * height - offset;
       var vert = i * 25;
       var horz = 250;
       return 'translate(' + horz + ',' + vert + ')';
@@ -250,8 +229,6 @@ d3.csv("titanic.csv", function(error, passengers) {
     
   svgBar.selectAll("g")
       .data(legendText)
-      //.enter()
-      //.append('g')
       .append('text')
       .attr('x', 23)
       .attr('y', 13)
@@ -263,11 +240,8 @@ d3.csv("titanic.csv", function(error, passengers) {
       .call(xAxisBar)
     .selectAll("text")
       .style("text-anchor", "end")
-      //.attr("dx", "-.8em")
       .attr("dx", "1.55em")
-      //.attr("dy", "-.55em");
       .attr("dy", ".7em");
-      //.attr("transform", "rotate(-90)" );
 
   svgBar.append("g")
       .attr("class", "axis axis--y")
@@ -357,7 +331,6 @@ d3.csv("titanic.csv", function(error, passengers) {
   var g = svg.selectAll(".dimension")
       .data(dimensions)
     .enter().append("g")
-      //.style("opacity", 1)
       .attr("class", "dimension")
       .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
       .on("mouseover", function(d) {d3.select(this).style("font-size", '14px').style('font-weight', 'bold');})
@@ -436,7 +409,6 @@ function brushend() {
     return actives.every(function(p, i) {
       if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
         highlightedData[i].push(d);
-        //smallestSet(highlightedData);
 
       }
       return extents[i][0] <= d[p] && d[p] <= extents[i][1];
@@ -523,7 +495,6 @@ function brush() {
       });
 
       var dataset = [["female", countFemaleSurvived, "survived"], ["female", countFemaleDead, "perished"], ["male", countMaleSurvived, "survived"], ["male", countMaleDead, "perished"]];
-      //dataset.sort(function(a, b) {return b[1] - a[1]});
       
       var state = ["survived", "dead"];
 
@@ -547,13 +518,6 @@ function brush() {
           .attr("class", "axis axis--x")
           .attr("transform", "translate(" + marginBar.left + "," + heightBar + ")")
           .call(xAxisBar);
-
-        /*
-        .selectAll("text")
-          .style("text-anchor", "end")
-          .attr("dx", "-.8em")
-          .attr("dy", "-.55em")
-          .attr("transform", "rotate(-90)" );*/
 
       svgBar.append("g")
           .attr("class", "axis axis--y")
@@ -592,12 +556,6 @@ function brush() {
           greaterGender = "male";
           lesserGender = "female";
       }
-
-      /*d3.selectAll('table').data([]).exit().remove();
-
-      var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest'];
-      tabulate(highlighted, columns);*/
-
 
       d3.selectAll(".bar").data([]).exit().remove();
 
