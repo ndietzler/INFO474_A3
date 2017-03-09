@@ -125,6 +125,36 @@ var xAxisBar = d3.svg.axis().scale(xBar).orient("bottom");
 
 var yAxisBar = d3.svg.axis().scale(yBar).orient("left");
 
+var tabulate = function (data,columns) {
+  var table = d3.select('body').append('table')
+  var thead = table.append('thead')
+  var tbody = table.append('tbody')
+
+  thead.append('tr')
+    .selectAll('th')
+      .data(columns)
+      .enter()
+    .append('th')
+      .text(function (d) { return d })
+
+  var rows = tbody.selectAll('tr')
+      .data(data)
+      .enter()
+    .append('tr')
+
+  var cells = rows.selectAll('td')
+      .data(function(row) {
+        return columns.map(function (column) {
+          return { column: column, value: row[column] }
+        })
+      })
+      .enter()
+    .append('td')
+      .text(function (d) { return d.value })
+
+  return table;
+}
+
 
 
 
@@ -137,6 +167,9 @@ d3.csv("titanic.csv", function(error, passengers) {
         .range([height, 0]));
 
   }));
+
+  var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest']; /**/
+  tabulate(passengers, columns);
 
   var state = ["survived", "dead"];
 
@@ -510,6 +543,14 @@ function brush() {
           lesserGender = "female";
       }
 
+      d3.selectAll('table').data([]).exit().remove();
+
+      var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest']; /**/
+      console.log(highlighted.length);
+      if (highlighted.length < 500) {
+          tabulate(highlighted, columns);
+      }
+
 
       d3.selectAll(".bar").data([]).exit().remove();
 
@@ -546,14 +587,7 @@ function brush() {
           .on("mouseout", function() { tooltip.style("display", "none"); })
           .on("mousemove", function(d) {
             var xPosition = d3.mouse(this)[0];
-            //var yPosition = d3.mouse(this)[1] - 25;
-            //var xPosition = d3.mouse(this)[0] - 15 + 700;
-            //var xPosition = d3.mouse(this)[0] - 15;
             var yPosition = d3.mouse(this)[1] - 25;
-            //var xPosition = 250;
-            //var yPosition = 250;
-            console.log(d3.mouse(this)[0] - 15);
-            console.log(d3.mouse(this)[1] - 25);
             tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
             tooltip.select("text").text(d[1] + " " + d[0] + "(s) " + d[2]);
           });
