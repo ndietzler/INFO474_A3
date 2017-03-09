@@ -125,7 +125,7 @@ var xAxisBar = d3.svg.axis().scale(xBar).orient("bottom");
 
 var yAxisBar = d3.svg.axis().scale(yBar).orient("left");
 
-var tabulate = function (data,columns) {
+var tabulate = function (data, columns) {
   var table = d3.select('body').append('table')
   var thead = table.append('thead')
   var tbody = table.append('tbody')
@@ -135,6 +135,7 @@ var tabulate = function (data,columns) {
       .data(columns)
       .enter()
     .append('th')
+      //.style("float", "left")
       .text(function (d) { return d })
 
   var rows = tbody.selectAll('tr')
@@ -150,7 +151,7 @@ var tabulate = function (data,columns) {
       })
       .enter()
     .append('td')
-      .text(function (d) { return d.value })
+      .text(function (d) { if (d.value === '1') {return 'yes'} else if (d.value === '0') {return 'no'} return d.value })
 
   return table;
 }
@@ -168,8 +169,8 @@ d3.csv("titanic.csv", function(error, passengers) {
 
   }));
 
-  var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest']; /**/
-  tabulate(passengers, columns);
+  /*var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest'];
+  tabulate(passengers, columns);*/
 
   var state = ["survived", "dead"];
 
@@ -372,6 +373,9 @@ d3.csv("titanic.csv", function(error, passengers) {
       .each(function(d) {
         d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush));
       })
+      .each(function(d) {
+        d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushend", brushend).on("brush", brush));
+      })
     .selectAll("rect")
       .attr("x", -8)
       .attr("width", 16);
@@ -412,6 +416,46 @@ function path(d) {
 
 function brushstart() {
   d3.event.sourceEvent.stopPropagation();
+}
+
+function brushend() {
+  var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }), //array of dimension names
+      extents = actives.map(function(p) { return y[p].brush.extent(); }); //array of ranges of accepted values
+
+  var highlightedData = [[], [], [], [], []];
+
+  foreground.style("display", function(d) {
+    return actives.every(function(p, i) {
+      if (extents[i][0] <= d[p] && d[p] <= extents[i][1]) {
+        highlightedData[i].push(d);
+        //smallestSet(highlightedData);
+
+      }
+      return extents[i][0] <= d[p] && d[p] <= extents[i][1];
+    }) ? null : "none";
+
+  });
+
+  d3.selectAll('table').data([]).exit().remove();
+
+  var index = 0;
+      var minLength = highlightedData[0].length;
+      for (var i = 1; i < 5; i++) {
+          var length = highlightedData[i].length;
+          if (length < minLength && length > 0) {
+            minLength = length;
+            index = i;
+          }
+      }
+  var highlighted = highlightedData[index];
+
+  var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest'];
+  console.log(highlighted);
+
+  tabulate(highlighted, columns);
+
+
+
 }
 
 // Handles a brush event, toggling the display of foreground lines.
@@ -543,13 +587,10 @@ function brush() {
           lesserGender = "female";
       }
 
-      d3.selectAll('table').data([]).exit().remove();
+      /*d3.selectAll('table').data([]).exit().remove();
 
-      var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest']; /**/
-      console.log(highlighted.length);
-      if (highlighted.length < 500) {
-          tabulate(highlighted, columns);
-      }
+      var columns = ['class','survived','name','sex', 'age', 'siblings & spouses', 'parents & children', 'ticket', 'fare', 'cabin', 'embarked', 'boat', 'body', 'home.dest'];
+      tabulate(highlighted, columns);*/
 
 
       d3.selectAll(".bar").data([]).exit().remove();
@@ -608,7 +649,7 @@ function brush() {
             .attr("dy", "1.2em")
             .style("text-anchor", "middle")
             .attr("font-size", "12px")
-            .attr("font-weight", "bold");
+            .attr("font-weight", "bold"); 
 
   }
 
